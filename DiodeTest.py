@@ -20,7 +20,7 @@ import configparser
 
 # Set up Configuration File
 config = configparser.ConfigParser()
-config.read("diodeTestConfig.ini")
+config.read("diodeTestConfigWin.ini")
 print(config.sections())
 
 
@@ -38,6 +38,7 @@ while devicesConnected == False:
         port = serial.Serial(config['COMMPORTS']['tic'], baudrate=9600, timeout=0.1, write_timeout=0.1)
         tic = TicSerial(port)
         print('\r✓', flush=True, end='')
+        # print("Serial port detected for tic")
         sys.stdout.write("Serial port detected for tic\n")
         
     except serial.SerialException:
@@ -53,6 +54,7 @@ while devicesConnected == False:
     try:
         meter = serial.Serial(config['COMMPORTS']['meter'], baudrate=9600, timeout=0.1, write_timeout=0.1)
         print('\r✓', flush=True, end='')
+        # print("Serial port detected for meter")
         sys.stdout.write("Serial port detected for meter\n")
     except serial.SerialException:
         sys.stdout.write("No serial port detected for meter\n")
@@ -65,6 +67,7 @@ while devicesConnected == False:
     try:
         source = serial.Serial(config['COMMPORTS']['source'], baudrate=38400, timeout=0.1, write_timeout=0.1)
         print('\r✓', flush=True, end='')
+        # print("Serial port detected for source")
         sys.stdout.write("Serial port detected for source\n")
     except serial.SerialException:
         sys.stdout.write("No serial port detected for source\n")
@@ -76,6 +79,11 @@ while devicesConnected == False:
     if devicesConnected == False:
         sys.stdout.write("\033[3A")  # Move the cursor up 3 lines
         sleep(0.1)
+
+# port = serial.Serial(config['COMMPORTS']['tic'], baudrate=9600, timeout=0.1, write_timeout=0.1)
+# tic = TicSerial(port)
+# meter = serial.Serial(config['COMMPORTS']['meter'], baudrate=9600, timeout=0.1, write_timeout=0.1)
+# source = serial.Serial(config['COMMPORTS']['source'], baudrate=38400, timeout=0.1, write_timeout=0.1)
 
 print("All devices connected")
 
@@ -173,6 +181,7 @@ def stepper_routine(measMin, measMax, forward, waitTime):
     plt.xlabel("Angle (degrees)")
     plt.ylabel("Magnitude")
     plt.ylim(min(results) * 0.99, max(results) * 1.01)
+    plt.savefig(f"results_{measMin}_{measMax}_{waitTime}_{forward}.png")
     # plt.show()
     return np.argmax(results)
 
