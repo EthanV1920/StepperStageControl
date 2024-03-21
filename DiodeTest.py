@@ -27,7 +27,8 @@ print(config.sections())
 # Define Global Variables
 devicesConnected = False
 stepperRunning = True
-symbols = ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█", "▇", "▆", "▅", "▄", "▃", "▁"]
+# symbols = ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█", "▇", "▆", "▅", "▄", "▃", "▁"]
+symbols = ["/", "-", "\\", "|"]
 i = 0
 
 while devicesConnected == False:
@@ -37,7 +38,7 @@ while devicesConnected == False:
     try:
         port = serial.Serial(config['COMMPORTS']['tic'], baudrate=9600, timeout=0.1, write_timeout=0.1)
         tic = TicSerial(port)
-        print('\r✓', flush=True, end='')
+        print('\rX', flush=True, end='')
         # print("Serial port detected for tic")
         sys.stdout.write("Serial port detected for tic\n")
         
@@ -53,7 +54,7 @@ while devicesConnected == False:
     
     try:
         meter = serial.Serial(config['COMMPORTS']['meter'], baudrate=9600, timeout=0.1, write_timeout=0.1)
-        print('\r✓', flush=True, end='')
+        print('\rX', flush=True, end='')
         # print("Serial port detected for meter")
         sys.stdout.write("Serial port detected for meter\n")
     except serial.SerialException:
@@ -66,7 +67,7 @@ while devicesConnected == False:
 
     try:
         source = serial.Serial(config['COMMPORTS']['source'], baudrate=38400, timeout=0.1, write_timeout=0.1)
-        print('\r✓', flush=True, end='')
+        print('\rX', flush=True, end='')
         # print("Serial port detected for source")
         sys.stdout.write("Serial port detected for source\n")
     except serial.SerialException:
@@ -78,7 +79,7 @@ while devicesConnected == False:
     # Wait for 1 second and try again
     if devicesConnected == False:
         sys.stdout.write("\033[3A")  # Move the cursor up 3 lines
-        sleep(0.1)
+        sleep(0.2)
 
 # port = serial.Serial(config['COMMPORTS']['tic'], baudrate=9600, timeout=0.1, write_timeout=0.1)
 # tic = TicSerial(port)
