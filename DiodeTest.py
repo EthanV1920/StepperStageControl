@@ -16,12 +16,17 @@ import sys
 import serial
 import matplotlib.pyplot as plt
 import csv
+import configparser
+
+# Set up Configuration File
+config = configparser.ConfigParser()
+config.read("diodeTestConfig.ini")
+print(config.sections())
 
 
 # Define Global Variables
 devicesConnected = False
 stepperRunning = True
-# symbols = ['⣾', '⣷', '⣯', '⣟', '⡿', '⢿', '⣻', '⣽']
 symbols = ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█", "▇", "▆", "▅", "▄", "▃", "▁"]
 i = 0
 
@@ -30,7 +35,7 @@ while devicesConnected == False:
     i = (i + 1) % len(symbols)
     sys.stdout.write("\033[K")   # Erase the current line
     try:
-        port = serial.Serial("/dev/tty.usbserial-FT73TWW8", baudrate=9600, timeout=0.1, write_timeout=0.1)
+        port = serial.Serial(config['COMMPORTS']['tic'], baudrate=9600, timeout=0.1, write_timeout=0.1)
         tic = TicSerial(port)
         print('\r✓', flush=True, end='')
         sys.stdout.write("Serial port detected for tic\n")
@@ -46,7 +51,7 @@ while devicesConnected == False:
     print('\r\033[K%s' % symbols[i], flush=True, end='')
     
     try:
-        meter = serial.Serial("/dev/tty.usbserial-FTXJ3D28", baudrate=9600, timeout=0.1, write_timeout=0.1)
+        meter = serial.Serial(config['COMMPORTS']['meter'], baudrate=9600, timeout=0.1, write_timeout=0.1)
         print('\r✓', flush=True, end='')
         sys.stdout.write("Serial port detected for meter\n")
     except serial.SerialException:
@@ -58,7 +63,7 @@ while devicesConnected == False:
     print('\r\033[K%s' % symbols[i], flush=True, end='')
 
     try:
-        source = serial.Serial("/dev/tty.usbserial-OSME003_FTDI_C", baudrate=38400, timeout=0.1, write_timeout=0.1)
+        source = serial.Serial(config['COMMPORTS']['source'], baudrate=38400, timeout=0.1, write_timeout=0.1)
         print('\r✓', flush=True, end='')
         sys.stdout.write("Serial port detected for source\n")
     except serial.SerialException:
@@ -177,7 +182,9 @@ if __name__ == "__main__":
     # Define measurement range
     while True:
         try:
-            measMax = int(input("Measurement extent: "))
+            # In terminal user input
+            # measMax = int(input("Measurement extent: "))
+            measMax = int(config['TESTPARAMS']['sweepDegrees'])
             break
         except ValueError:
             print("That's not a valid integer. Please try again.")
